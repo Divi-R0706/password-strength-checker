@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Password Checker</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --text: #172033;
+            --muted: #5d697c;
+            --line: #d9e1ee;
+            --accent: #0f766e;
+            --accent-dark: #115e59;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --success: #15803d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        main {
+            width: min(100%, 560px);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
+            padding: 28px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 16px;
+            padding: 12px 14px;
+            color: var(--text);
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 11px 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .primary:hover {
+            background: var(--accent-dark);
+        }
+
+        .secondary {
+            background: #e8edf5;
+            color: var(--text);
+        }
+
+        .secondary:hover {
+            background: #dce4f0;
+        }
+
+        .result {
+            margin-top: 24px;
+            border-top: 1px solid var(--line);
+            padding-top: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .weak {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .medium {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .strong {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        ul {
+            margin: 12px 0 0;
+            padding-left: 20px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .generated {
+            margin-top: 24px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 14px;
+            background: #f9fbff;
+            overflow-wrap: anywhere;
+        }
+
+        .generated code {
+            display: block;
+            margin-top: 8px;
+            font-size: 18px;
+            color: var(--accent-dark);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px;
+                place-items: start center;
+            }
+
+            main {
+                padding: 22px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Password Checker</h1>
+        <p class="subtitle">Check password strength or generate a secure password.</p>
+
+        <form method="post">
+            <label for="password">Password</label>
+            <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Enter a password"
+            >
+
+            <div class="actions">
+                <button class="primary" type="submit" name="check">Check Strength</button>
+                <button class="secondary" type="submit" name="generate">Generate Password</button>
+            </div>
+        </form>
+
+        {% if result %}
+            <section class="result" aria-live="polite">
+                <strong>Strength:</strong>
+                <span class="badge {{ result|lower }}">{{ result }}</span>
+
+                {% if suggestions %}
+                    <ul>
+                        {% for suggestion in suggestions %}
+                            <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        {% if generated_password %}
+            <section class="generated" aria-live="polite">
+                <strong>Generated password</strong>
+                <code>{{ generated_password }}</code>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
